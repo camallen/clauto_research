@@ -16,20 +16,17 @@ The loop is driven by a **stop hook** — when Claude finishes an iteration, the
 
 ## Installation
 
-Clone this repo, then register it as a Claude Code plugin:
-
 ```bash
 git clone git@github.com:camallen/clauto_research.git
-
-# Add the plugin to your project (from your target project directory)
-claude plugins add /path/to/clauto_research
 ```
 
-Or add it directly to your project's `.claude/plugins.json`:
+Start Claude Code with the plugin loaded:
 
-```json
-["/path/to/clauto_research"]
+```bash
+claude --plugin-dir /path/to/clauto_research
 ```
+
+Or from inside a Claude Code session, use `/plugin` to browse and install it interactively.
 
 ## Usage
 
