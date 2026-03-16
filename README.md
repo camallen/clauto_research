@@ -1,6 +1,6 @@
-# autoresearch
+# clauto_research
 
-A Claude Code plugin that runs autonomous experiment loops. Give it a goal and a benchmark command, and it will iteratively try changes, measure results, keep what works, revert what doesn't, and repeat until the goal is met.
+A Claude Code plugin (`autoresearch`) that runs autonomous experiment loops. Give it a goal and a benchmark command, and it will iteratively try changes, measure results, keep what works, revert what doesn't, and repeat until the goal is met.
 
 Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) concept.
 
@@ -19,8 +19,7 @@ The loop is driven by a **stop hook** — when Claude finishes an iteration, the
 Clone this repo, then register it as a Claude Code plugin:
 
 ```bash
-git clone https://github.com/yourusername/clauto_research.git
-cd clauto_research
+git clone git@github.com:camallen/clauto_research.git
 
 # Add the plugin to your project (from your target project directory)
 claude plugins add /path/to/clauto_research
