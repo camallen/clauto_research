@@ -51,6 +51,7 @@ export CLAUDE_CODE_SESSION_ID="test-session-123"
   --command "wc -l < target.txt | tr -d ' '" \
   --metric line_count \
   --direction lower \
+  --scope "src/**/*.txt" \
   --max-iterations 5 \
   > /dev/null
 
@@ -85,6 +86,7 @@ echo "--- Test 4: clauto_research.md has correct config ---"
 grep -q "reduce line count" clauto_research.md && pass "goal in clauto_research.md" || fail "goal missing from clauto_research.md"
 grep -q "line_count" clauto_research.md && pass "metric in clauto_research.md" || fail "metric missing from clauto_research.md"
 grep -q "lower" clauto_research.md && pass "direction in clauto_research.md" || fail "direction missing from clauto_research.md"
+grep -q "src/\*\*/\*.txt" clauto_research.md && pass "scope in clauto_research.md" || fail "scope missing from clauto_research.md"
 
 # ============================================================
 echo "--- Test 5: Stop hook continues loop ---"
