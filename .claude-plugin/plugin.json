@@ -1,0 +1,8 @@
+{
+  "name": "autoresearch",
+  "description": "Autonomous experiment loop for continuous optimization. Try an idea, measure it, keep what works, discard what doesn't, repeat forever.",
+  "author": {
+    "name": "cam",
+    "email": ""
+  }
+}
