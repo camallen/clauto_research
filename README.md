@@ -2,7 +2,7 @@
 
 A Claude Code plugin (`autoresearch`) that runs autonomous experiment loops. Give it a goal and a benchmark command, and it will iteratively try changes, measure results, keep what works, revert what doesn't, and repeat until the goal is met.
 
-Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) concept.
+Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch:start) concept.
 
 ## How it works
 
@@ -18,22 +18,15 @@ The loop is driven by a **stop hook** — when Claude finishes an iteration, the
 
 ```bash
 git clone git@github.com:camallen/clauto_research.git
-```
-
-Start Claude Code with the plugin loaded:
-
-```bash
 claude --plugin-dir /path/to/clauto_research
 ```
-
-Or from inside a Claude Code session, use `/plugin` to browse and install it interactively.
 
 ## Usage
 
 ### Start a research loop
 
 ```
-/autoresearch reduce test runtime --command "npm test" --metric duration_ms --direction lower
+/autoresearch:start reduce test runtime --command "npm test" --metric duration_ms --direction lower
 ```
 
 **Required flags:**
@@ -51,19 +44,19 @@ If you omit flags, Claude will ask you for the missing info interactively.
 
 ```bash
 # Optimize test speed
-/autoresearch reduce test runtime --command "npm test" --metric duration_ms --direction lower
+/autoresearch:start reduce test runtime --command "npm test" --metric duration_ms --direction lower
 
 # Improve Lighthouse score
-/autoresearch improve lighthouse score --command "npx lighthouse http://localhost:3000 --output json" --metric performance --direction higher --max-iterations 30
+/autoresearch:start improve lighthouse score --command "npx lighthouse http://localhost:3000 --output json" --metric performance --direction higher --max-iterations 30
 
 # Shrink bundle size, only touching TypeScript files
-/autoresearch shrink bundle size --command "npm run build" --metric bundle_kb --direction lower --scope "src/**/*.ts"
+/autoresearch:start shrink bundle size --command "npm run build" --metric bundle_kb --direction lower --scope "src/**/*.ts"
 ```
 
 ### Resume an interrupted session
 
 ```
-/resume
+/autoresearch:resume
 ```
 
 Picks up where the last session left off — updates the session ID so the stop hook works again, shows a summary of progress so far, and continues the experiment loop.
@@ -71,7 +64,7 @@ Picks up where the last session left off — updates the session ID so the stop 
 ### Check progress
 
 ```
-/dashboard
+/autoresearch:dashboard
 ```
 
 Shows the current objective, total experiments, best result, recent experiment history, and strategy notes.
@@ -79,7 +72,7 @@ Shows the current objective, total experiments, best result, recent experiment h
 ### Cancel the loop
 
 ```
-/cancel
+/autoresearch:cancel
 ```
 
 Stops the loop, shows a final summary, and cleans up session files.
@@ -94,11 +87,11 @@ When a loop starts, these files are created in your project root:
 | `autoresearch.sh` | Benchmark script that outputs `METRIC name=value` |
 | `autoresearch.jsonl` | JSON Lines log of every experiment result |
 | `autoresearch.checks.sh` | Optional validation gate — if this fails, the experiment is reverted regardless of metric |
-| `.claude/autoresearch-loop.local.md` | Loop state (iteration count, config, prompt) |
+| `.claude/autoresearch:start-loop.local.md` | Loop state (iteration count, config, prompt) |
 
 ### Adding validation checks
 
-Copy `templates/autoresearch.checks.sh` to your project root and add commands:
+Copy `templates/autoresearch:start.checks.sh` to your project root and add commands:
 
 ```bash
 #!/bin/bash
