@@ -134,14 +134,14 @@ if [[ -n "$COMMAND" ]]; then
 
 set -euo pipefail
 
-START_MS=\$(python3 -c "import time; print(int(time.time()*1000))")
+START_S=\$(date +%s)
 
 # Run the benchmark command
 ${COMMAND}
 EXIT_CODE=\$?
 
-END_MS=\$(python3 -c "import time; print(int(time.time()*1000))")
-DURATION_MS=\$((END_MS - START_MS))
+END_S=\$(date +%s)
+DURATION_MS=\$(( (END_S - START_S) * 1000 ))
 
 if [[ \$EXIT_CODE -ne 0 ]]; then
   echo "BENCHMARK_FAILED exit_code=\$EXIT_CODE"
