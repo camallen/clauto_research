@@ -9,7 +9,7 @@ set -euo pipefail
 HOOK_INPUT=$(cat)
 
 # Check for autoresearch loop state
-STATE_FILE=".claude/autoresearch-loop.local.md"
+STATE_FILE=".claude/clauto_research-loop.local.md"
 
 if [[ ! -f "$STATE_FILE" ]]; then
   exit 0

@@ -99,8 +99,8 @@ fi
 BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
 
 # Create session files
-# 1. autoresearch.md — living document
-cat > autoresearch.md <<SESSIONEOF
+# 1. clauto_research.md — living document
+cat > clauto_research.md <<SESSIONEOF
 # Autoresearch Session
 
 ## Objective
@@ -125,9 +125,9 @@ _None yet._
 _Starting fresh. Will establish baseline first, then begin experiments._
 SESSIONEOF
 
-# 2. autoresearch.sh — benchmark script
+# 2. clauto_research.sh — benchmark script
 if [[ -n "$COMMAND" ]]; then
-  cat > autoresearch.sh <<BENCHEOF
+  cat > clauto_research.sh <<BENCHEOF
 #!/bin/bash
 # Autoresearch benchmark script
 # Outputs: METRIC name=value
@@ -150,9 +150,9 @@ fi
 
 echo "METRIC duration_ms=\$DURATION_MS"
 BENCHEOF
-  chmod +x autoresearch.sh
+  chmod +x clauto_research.sh
 else
-  cat > autoresearch.sh <<'BENCHEOF'
+  cat > clauto_research.sh <<'BENCHEOF'
 #!/bin/bash
 # Autoresearch benchmark script
 # TODO: Replace this with your actual benchmark command
@@ -164,14 +164,14 @@ else
 
 set -euo pipefail
 
-echo "ERROR: benchmark command not configured. Edit autoresearch.sh or re-run /autoresearch with --command"
+echo "ERROR: benchmark command not configured. Edit clauto_research.sh or re-run /autoresearch with --command"
 exit 1
 BENCHEOF
-  chmod +x autoresearch.sh
+  chmod +x clauto_research.sh
 fi
 
-# 3. autoresearch.jsonl — experiment log (empty to start)
-touch autoresearch.jsonl
+# 3. clauto_research.jsonl — experiment log (empty to start)
+touch clauto_research.jsonl
 
 # 4. Set up Ralph-compatible loop state file
 mkdir -p .claude
@@ -184,16 +184,16 @@ else
 fi
 
 # Build the research loop prompt
-LOOP_PROMPT="You are in an autoresearch loop. Read autoresearch.md for context, then run ONE experiment cycle:
+LOOP_PROMPT="You are in an autoresearch loop. Read clauto_research.md for context, then run ONE experiment cycle:
 
-1. Read autoresearch.md and autoresearch.jsonl to understand what's been tried
+1. Read clauto_research.md and clauto_research.jsonl to understand what's been tried
 2. Plan one focused change based on prior results
 3. Implement the change and commit it
-4. Run: bash autoresearch.sh — parse METRIC lines from output
-5. If autoresearch.checks.sh exists, run it — failure means revert regardless of metric
-6. Append result to autoresearch.jsonl as JSON
+4. Run: bash clauto_research.sh — parse METRIC lines from output
+5. If clauto_research.checks.sh exists, run it — failure means revert regardless of metric
+6. Append result to clauto_research.jsonl as JSON
 7. If improved and checks passed: keep. Otherwise: git revert HEAD --no-edit
-8. Update autoresearch.md with learnings
+8. Update clauto_research.md with learnings
 9. Print summary table showing iteration, metric value, baseline, best, and decision
 
 Goal: ${GOAL}
@@ -202,7 +202,7 @@ Scope: ${SCOPE:-all files}
 
 If the target is met, output <promise>${COMPLETION_PROMISE}</promise>"
 
-cat > .claude/autoresearch-loop.local.md <<STATEEOF
+cat > .claude/clauto_research-loop.local.md <<STATEEOF
 ---
 active: true
 iteration: 1
@@ -221,15 +221,15 @@ cat <<EOF
 
 Goal:       ${GOAL}
 Metric:     ${METRIC:-duration_ms} (${DIRECTION} is better)
-Command:    ${COMMAND:-"(edit autoresearch.sh)"}
+Command:    ${COMMAND:-"(edit clauto_research.sh)"}
 Scope:      ${SCOPE:-all files}
 Iterations: $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo "unlimited"; fi)
 Branch:     ${BRANCH}
 
 Session files created:
-  autoresearch.md      — living document (your memory across resets)
-  autoresearch.sh      — benchmark script
-  autoresearch.jsonl   — experiment log
+  clauto_research.md      — living document (your memory across resets)
+  clauto_research.sh      — benchmark script
+  clauto_research.jsonl   — experiment log
 
 Starting research loop. First step: establish baseline by running the benchmark.
 EOF

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Autoresearch backpressure checks (optional)
-# Copy this to your project root as autoresearch.checks.sh
+# Copy this to your project root as clauto_research.checks.sh
 # If this script fails, the experiment is reverted regardless of metric improvement.
 #
 # Examples:

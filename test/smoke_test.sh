@@ -46,7 +46,7 @@ echo "--- Test 1: Setup script creates session files ---"
 
 export CLAUDE_CODE_SESSION_ID="test-session-123"
 
-"$PLUGIN_ROOT/scripts/setup-autoresearch.sh" \
+"$PLUGIN_ROOT/scripts/setup_clauto_research.sh" \
   reduce line count \
   --command "wc -l < target.txt | tr -d ' '" \
   --metric line_count \
@@ -54,16 +54,16 @@ export CLAUDE_CODE_SESSION_ID="test-session-123"
   --max-iterations 5 \
   > /dev/null
 
-[[ -f autoresearch.md ]] && pass "autoresearch.md created" || fail "autoresearch.md missing"
-[[ -f autoresearch.sh ]] && pass "autoresearch.sh created" || fail "autoresearch.sh missing"
-[[ -f autoresearch.jsonl ]] && pass "autoresearch.jsonl created" || fail "autoresearch.jsonl missing"
-[[ -f .claude/autoresearch-loop.local.md ]] && pass "loop state file created" || fail "loop state file missing"
+[[ -f clauto_research.md ]] && pass "clauto_research.md created" || fail "clauto_research.md missing"
+[[ -f clauto_research.sh ]] && pass "clauto_research.sh created" || fail "clauto_research.sh missing"
+[[ -f clauto_research.jsonl ]] && pass "clauto_research.jsonl created" || fail "clauto_research.jsonl missing"
+[[ -f .claude/clauto_research-loop.local.md ]] && pass "loop state file created" || fail "loop state file missing"
 
 # ============================================================
 echo "--- Test 2: State file has correct frontmatter ---"
 # ============================================================
 
-STATE_FILE=".claude/autoresearch-loop.local.md"
+STATE_FILE=".claude/clauto_research-loop.local.md"
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
 
 echo "$FRONTMATTER" | grep -q "iteration: 1" && pass "iteration starts at 1" || fail "iteration not 1"
@@ -75,16 +75,16 @@ echo "$FRONTMATTER" | grep -q 'completion_promise: "GOAL MET"' && pass "completi
 echo "--- Test 3: Benchmark script runs and outputs METRIC ---"
 # ============================================================
 
-BENCH_OUTPUT=$(bash autoresearch.sh 2>&1)
+BENCH_OUTPUT=$(bash clauto_research.sh 2>&1)
 echo "$BENCH_OUTPUT" | grep -q "^METRIC " && pass "benchmark outputs METRIC line" || fail "no METRIC in benchmark output"
 
 # ============================================================
-echo "--- Test 4: autoresearch.md has correct config ---"
+echo "--- Test 4: clauto_research.md has correct config ---"
 # ============================================================
 
-grep -q "reduce line count" autoresearch.md && pass "goal in autoresearch.md" || fail "goal missing from autoresearch.md"
-grep -q "line_count" autoresearch.md && pass "metric in autoresearch.md" || fail "metric missing from autoresearch.md"
-grep -q "lower" autoresearch.md && pass "direction in autoresearch.md" || fail "direction missing from autoresearch.md"
+grep -q "reduce line count" clauto_research.md && pass "goal in clauto_research.md" || fail "goal missing from clauto_research.md"
+grep -q "line_count" clauto_research.md && pass "metric in clauto_research.md" || fail "metric missing from clauto_research.md"
+grep -q "lower" clauto_research.md && pass "direction in clauto_research.md" || fail "direction missing from clauto_research.md"
 
 # ============================================================
 echo "--- Test 5: Stop hook continues loop ---"
@@ -101,7 +101,7 @@ HOOK_INPUT=$(jq -n \
   --arg tp "$TRANSCRIPT" \
   '{"session_id": $sid, "transcript_path": $tp}')
 
-HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop-hook.sh" 2>&1)
+HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop_hook.sh" 2>&1)
 
 echo "$HOOK_OUTPUT" | jq -e '.decision == "block"' > /dev/null 2>&1 \
   && pass "stop hook returns block decision" || fail "stop hook didn't return block"
@@ -127,7 +127,7 @@ HOOK_INPUT=$(jq -n \
   --arg tp "$TRANSCRIPT" \
   '{"session_id": $sid, "transcript_path": $tp}')
 
-HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop-hook.sh" 2>&1)
+HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop_hook.sh" 2>&1)
 
 # State file should be removed (loop ended)
 [[ ! -f "$STATE_FILE" ]] && pass "state file removed on goal met" || fail "state file still exists after goal met"
@@ -161,7 +161,7 @@ HOOK_INPUT=$(jq -n \
   --arg tp "$TRANSCRIPT" \
   '{"session_id": $sid, "transcript_path": $tp}')
 
-HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop-hook.sh" 2>&1)
+HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop_hook.sh" 2>&1)
 
 [[ ! -f "$STATE_FILE" ]] && pass "state file removed at max iterations" || fail "state file still exists at max iterations"
 echo "$HOOK_OUTPUT" | grep -q "max iterations" && pass "stop hook reports max iterations" || fail "stop hook didn't report max iterations"
@@ -189,7 +189,7 @@ HOOK_INPUT=$(jq -n \
   --arg tp "$TRANSCRIPT" \
   '{"session_id": $sid, "transcript_path": $tp}')
 
-HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop-hook.sh" 2>&1)
+HOOK_OUTPUT=$(echo "$HOOK_INPUT" | bash "$PLUGIN_ROOT/hooks/stop_hook.sh" 2>&1)
 
 # State file should still exist (hook ignored it)
 [[ -f "$STATE_FILE" ]] && pass "state file untouched for wrong session" || fail "state file removed for wrong session"
@@ -201,11 +201,11 @@ echo "--- Test 9: Setup script rejects missing args ---"
 # ============================================================
 
 # No args at all
-OUTPUT=$(bash "$PLUGIN_ROOT/scripts/setup-autoresearch.sh" 2>&1) || true
+OUTPUT=$(bash "$PLUGIN_ROOT/scripts/setup_clauto_research.sh" 2>&1) || true
 echo "$OUTPUT" | grep -qi "goal\|gather\|no goal" && pass "no-args prompts for goal" || fail "no-args didn't prompt"
 
 # Goal but no --command/--metric
-OUTPUT=$(bash "$PLUGIN_ROOT/scripts/setup-autoresearch.sh" some goal 2>&1) || true
+OUTPUT=$(bash "$PLUGIN_ROOT/scripts/setup_clauto_research.sh" some goal 2>&1) || true
 echo "$OUTPUT" | grep -qi "command\|metric\|missing" && pass "missing flags prompts for them" || fail "missing flags didn't prompt"
 
 # ============================================================
