@@ -11,7 +11,7 @@ Both projects implement autonomous iterative optimization loops for Claude Code,
 | **Format** | Claude plugin (`.claude-plugin/`) | Claude skill (`SKILL.md` + references) |
 | **Implementation** | Bash scripts + Markdown commands | Pure Markdown (no code files) |
 | **Loop mechanism** | Stop hook (`stop-hook.sh`) intercepts session end, increments iteration, re-injects prompt | Relies on Claude Code's `/loop N` command or unbounded self-continuation |
-| **State management** | YAML frontmatter in `.claude/autoresearch-loop.local.md` + JSON Lines log | TSV log (`autoresearch-results.tsv`) + git history |
+| **State management** | YAML frontmatter in `.claude/clauto_research-loop.local.md` + JSON Lines log | TSV log (`autoresearch-results.tsv`) + git history |
 | **Setup** | Bash script (`scripts/setup-autoresearch.sh`) generates all session files | Pure prompt-driven setup within SKILL.md |
 | **Termination** | `<promise>GOAL MET</promise>` tags detected by hook | Bounded via `/loop N`, unbounded runs until `Ctrl+C` |
 
@@ -25,7 +25,7 @@ Both projects implement autonomous iterative optimization loops for Claude Code,
 | Guard clause (regression prevention) | No | Yes (optional secondary verification) |
 | Dashboard command | Yes (`/dashboard`) | No (inline progress summaries every ~10 iterations) |
 | Cancel command | Yes (`/cancel`) | No (`Ctrl+C` or loop bound) |
-| Validation gate | Yes (`autoresearch.checks.sh` template) | Yes (guard mechanism, more formalized) |
+| Validation gate | Yes (`clauto_research.checks.sh` template) | Yes (guard mechanism, more formalized) |
 | Crash recovery protocol | No explicit protocol | Yes (max 3 fix attempts, timeout rules, OOM handling) |
 | "When stuck" strategy | No | Yes (>5 consecutive discards triggers re-read + radical experiments) |
 | Domain adaptation table | No | Yes (backend, frontend, ML, content, performance, refactoring) |
@@ -38,10 +38,10 @@ Both projects implement autonomous iterative optimization loops for Claude Code,
 
 | Aspect | This repo | uditgoenka/autoresearch |
 |--------|-----------|-------------------------|
-| Results format | JSON Lines (`autoresearch.jsonl`) | TSV (`autoresearch-results.tsv`) |
+| Results format | JSON Lines (`clauto_research.jsonl`) | TSV (`autoresearch-results.tsv`) |
 | Fields tracked | timestamp, iteration, metric_name, metric_value, baseline, best, status, description, commit | iteration, commit, metric, delta, guard, status, description |
-| State file | `.claude/autoresearch-loop.local.md` with YAML frontmatter | No separate state file — loop state is implicit in `/loop` counter |
-| Living doc | `autoresearch.md` (objective, config, strategies, dead ends) | None — relies on git history + results log |
+| State file | `.claude/clauto_research-loop.local.md` with YAML frontmatter | No separate state file — loop state is implicit in `/loop` counter |
+| Living doc | `clauto_research.md` (objective, config, strategies, dead ends) | None — relies on git history + results log |
 | Git revert strategy | `git revert HEAD --no-edit` (preserves history) | `git reset --hard HEAD~1` (destructive) |
 
 ## Loop Mechanics
@@ -81,5 +81,5 @@ Both projects implement autonomous iterative optimization loops for Claude Code,
 - Hook-based loop control (more reliable than self-continuation)
 - Session isolation (cross-session safety)
 - Safe revert strategy (`git revert` over `git reset --hard`)
-- Living strategy document (`autoresearch.md`)
+- Living strategy document (`clauto_research.md`)
 - Dashboard command

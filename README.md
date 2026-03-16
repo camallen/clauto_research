@@ -2,17 +2,17 @@
 
 A Claude Code plugin (`autoresearch`) that runs autonomous experiment loops. Give it a goal and a benchmark command, and it will iteratively try changes, measure results, keep what works, revert what doesn't, and repeat until the goal is met.
 
-Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch:start) concept.
+Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) concept.
 
 ## How it works
 
 1. You define a goal, a benchmark command, and a metric to optimize
 2. The plugin sets up session files and a stop hook that drives the loop
 3. Each iteration: plan a change → implement → commit → measure → keep or revert
-4. Results are logged to `autoresearch.jsonl` and strategies tracked in `autoresearch.md`
+4. Results are logged to `clauto_research.jsonl` and strategies tracked in `clauto_research.md`
 5. The loop continues automatically until the goal is met or max iterations reached
 
-The loop is driven by a **stop hook** — when Claude finishes an iteration, the hook intercepts the session end, increments the counter, and re-injects the prompt to start the next iteration. Each iteration gets a fresh context, with `autoresearch.md` serving as memory across resets. This is more reliable than relying on the agent to self-continue.
+The loop is driven by a **stop hook** — when Claude finishes an iteration, the hook intercepts the session end, increments the counter, and re-injects the prompt to start the next iteration. Each iteration gets a fresh context, with `clauto_research.md` serving as memory across resets. This is more reliable than relying on the agent to self-continue.
 
 ## Installation
 
@@ -83,15 +83,15 @@ When a loop starts, these files are created in your project root:
 
 | File | Purpose |
 |------|---------|
-| `autoresearch.md` | Living document — objective, strategies, dead ends (persists across context resets) |
-| `autoresearch.sh` | Benchmark script that outputs `METRIC name=value` |
-| `autoresearch.jsonl` | JSON Lines log of every experiment result |
-| `autoresearch.checks.sh` | Optional validation gate — if this fails, the experiment is reverted regardless of metric |
-| `.claude/autoresearch:start-loop.local.md` | Loop state (iteration count, config, prompt) |
+| `clauto_research.md` | Living document — objective, strategies, dead ends (persists across context resets) |
+| `clauto_research.sh` | Benchmark script that outputs `METRIC name=value` |
+| `clauto_research.jsonl` | JSON Lines log of every experiment result |
+| `clauto_research.checks.sh` | Optional validation gate — if this fails, the experiment is reverted regardless of metric |
+| `.claude/clauto_research-loop.local.md` | Loop state (iteration count, config, prompt) |
 
 ### Adding validation checks
 
-Copy `templates/autoresearch:start.checks.sh` to your project root and add commands:
+Copy `templates/clauto_research.checks.sh` to your project root and add commands:
 
 ```bash
 #!/bin/bash
