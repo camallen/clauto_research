@@ -1,5 +1,5 @@
 {
-  "name": "autoresearch",
+  "name": "clauto_research",
   "description": "Autonomous experiment loop for continuous optimization. Try an idea, measure it, keep what works, discard what doesn't, repeat forever.",
   "author": {
     "name": "cam",

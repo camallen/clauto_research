@@ -26,7 +26,7 @@ claude --plugin-dir /path/to/clauto_research
 ### Start a research loop
 
 ```
-/autoresearch:start reduce test runtime --command "npm test" --metric duration_ms --direction lower
+/clauto_research:start reduce test runtime --command "npm test" --metric duration_ms --direction lower
 ```
 
 **Required flags:**
@@ -44,19 +44,19 @@ If you omit flags, Claude will ask you for the missing info interactively.
 
 ```bash
 # Optimize test speed
-/autoresearch:start reduce test runtime --command "npm test" --metric duration_ms --direction lower
+/clauto_research:start reduce test runtime --command "npm test" --metric duration_ms --direction lower
 
 # Improve Lighthouse score
-/autoresearch:start improve lighthouse score --command "npx lighthouse http://localhost:3000 --output json" --metric performance --direction higher --max-iterations 30
+/clauto_research:start improve lighthouse score --command "npx lighthouse http://localhost:3000 --output json" --metric performance --direction higher --max-iterations 30
 
 # Shrink bundle size, only touching TypeScript files
-/autoresearch:start shrink bundle size --command "npm run build" --metric bundle_kb --direction lower --scope "src/**/*.ts"
+/clauto_research:start shrink bundle size --command "npm run build" --metric bundle_kb --direction lower --scope "src/**/*.ts"
 ```
 
 ### Resume an interrupted session
 
 ```
-/autoresearch:resume
+/clauto_research:resume
 ```
 
 Picks up where the last session left off — updates the session ID so the stop hook works again, shows a summary of progress so far, and continues the experiment loop.
@@ -64,7 +64,7 @@ Picks up where the last session left off — updates the session ID so the stop 
 ### Check progress
 
 ```
-/autoresearch:dashboard
+/clauto_research:dashboard
 ```
 
 Shows the current objective, total experiments, best result, recent experiment history, and strategy notes.
@@ -72,7 +72,7 @@ Shows the current objective, total experiments, best result, recent experiment h
 ### Cancel the loop
 
 ```
-/autoresearch:cancel
+/clauto_research:cancel
 ```
 
 Stops the loop, shows a final summary, and cleans up session files.

@@ -3,7 +3,7 @@
 ## Running
 
 ```bash
-bash test/smoke-test.sh
+bash test/smoke_test.sh
 ```
 
 ## How it works
@@ -16,7 +16,7 @@ A fake `CLAUDE_CODE_SESSION_ID` is exported so the setup script and stop hook ha
 
 | Test | What it does |
 |------|-------------|
-| 1. Setup script | Runs `setup-clauto_research.sh` with real flags, checks all 4 session files are created |
+| 1. Setup script | Runs `setup_clauto_research.sh` with real flags, checks all 4 session files are created |
 | 2. State frontmatter | Parses YAML frontmatter from the state file, verifies iteration/max/session_id/promise values |
 | 3. Benchmark | Runs the generated `clauto_research.sh`, checks stdout contains a `METRIC` line |
 | 4. Config | Greps `clauto_research.md` for goal, metric name, and direction |

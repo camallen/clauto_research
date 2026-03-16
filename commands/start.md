@@ -1,7 +1,7 @@
 ---
 description: "Start an autonomous experiment loop to optimize a metric"
 argument-hint: "[GOAL] [--command CMD] [--metric NAME] [--direction lower|higher] [--scope GLOB] [--max-iterations N]"
-allowed-tools: ["Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup-clauto_research.sh:*)", "Read", "Write", "Bash", "Glob", "Grep", "Edit"]
+allowed-tools: ["Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup_clauto_research.sh:*)", "Read", "Write", "Bash", "Glob", "Grep", "Edit"]
 ---
 
 # Autoresearch - Autonomous Experiment Loop
@@ -29,7 +29,7 @@ Once you have at least --command and --metric, construct the full flags and run 
 Run this now:
 
 ```
-"${CLAUDE_PLUGIN_ROOT}/scripts/setup-clauto_research.sh" $ARGUMENTS
+"${CLAUDE_PLUGIN_ROOT}/scripts/setup_clauto_research.sh" $ARGUMENTS
 ```
 
 After the script runs, verify that `.claude/clauto_research-loop.local.md` exists. If it does not, something went wrong — diagnose and fix before proceeding.

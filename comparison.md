@@ -10,9 +10,9 @@ Both projects implement autonomous iterative optimization loops for Claude Code,
 |--------|--------------------------------|-------------------------|
 | **Format** | Claude plugin (`.claude-plugin/`) | Claude skill (`SKILL.md` + references) |
 | **Implementation** | Bash scripts + Markdown commands | Pure Markdown (no code files) |
-| **Loop mechanism** | Stop hook (`stop-hook.sh`) intercepts session end, increments iteration, re-injects prompt | Relies on Claude Code's `/loop N` command or unbounded self-continuation |
+| **Loop mechanism** | Stop hook (`stop_hook.sh`) intercepts session end, increments iteration, re-injects prompt | Relies on Claude Code's `/loop N` command or unbounded self-continuation |
 | **State management** | YAML frontmatter in `.claude/clauto_research-loop.local.md` + JSON Lines log | TSV log (`autoresearch-results.tsv`) + git history |
-| **Setup** | Bash script (`scripts/setup-autoresearch.sh`) generates all session files | Pure prompt-driven setup within SKILL.md |
+| **Setup** | Bash script (`scripts/setup_clauto_research.sh`) generates all session files | Pure prompt-driven setup within SKILL.md |
 | **Termination** | `<promise>GOAL MET</promise>` tags detected by hook | Bounded via `/loop N`, unbounded runs until `Ctrl+C` |
 
 ## Feature Comparison
@@ -46,7 +46,7 @@ Both projects implement autonomous iterative optimization loops for Claude Code,
 
 ## Loop Mechanics
 
-**This repo (hook-driven):** The stop hook (`stop-hook.sh`) is the engine. It reads the transcript, checks for completion promises, increments the iteration count in the state file, and injects a system message to trigger the next iteration. This works independently of Claude Code's built-in loop features.
+**This repo (hook-driven):** The stop hook (`stop_hook.sh`) is the engine. It reads the transcript, checks for completion promises, increments the iteration count in the state file, and injects a system message to trigger the next iteration. This works independently of Claude Code's built-in loop features.
 
 **uditgoenka/autoresearch (prompt-driven):** SKILL.md instructs Claude to "loop until done" or relies on `/loop N` for bounded runs. No external script manages iterations — the agent itself is responsible for continuing. Simpler, but depends on Claude reliably following the "never stop, never ask permission" instruction.
 
