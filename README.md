@@ -12,7 +12,7 @@ Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch:s
 4. Results are logged to `autoresearch.jsonl` and strategies tracked in `autoresearch.md`
 5. The loop continues automatically until the goal is met or max iterations reached
 
-The loop is driven by a **stop hook** — when Claude finishes an iteration, the hook intercepts the session end, increments the counter, and re-injects the prompt to start the next iteration. This is more reliable than relying on the agent to self-continue.
+The loop is driven by a **stop hook** — when Claude finishes an iteration, the hook intercepts the session end, increments the counter, and re-injects the prompt to start the next iteration. Each iteration gets a fresh context, with `autoresearch.md` serving as memory across resets. This is more reliable than relying on the agent to self-continue.
 
 ## Installation
 
