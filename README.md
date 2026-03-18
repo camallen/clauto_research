@@ -35,6 +35,7 @@ claude --plugin-dir /path/to/clauto_research
 
 **Optional flags:**
 - `--direction lower|higher` — optimization direction (default: `lower`)
+- `--checks "<cmd>"` — validation command run after each experiment (e.g., `"npm test"`). If it fails, the change is reverted even if the metric improved
 - `--scope "<glob>"` — restrict which files can be modified (e.g., `"src/**/*.ts"`)
 - `--max-iterations <N>` — stop after N iterations (default: unlimited)
 
@@ -89,9 +90,11 @@ When a loop starts, these files are created in your project root:
 | `clauto_research.checks.sh` | Optional validation gate — if this fails, the experiment is reverted regardless of metric |
 | `.claude/clauto_research-loop.local.md` | Loop state (iteration count, config, prompt) |
 
-### Adding validation checks
+### Validation checks (optional)
 
-Copy `templates/clauto_research.checks.sh` to your project root and add commands:
+Your benchmark command (`clauto_research.sh`) only measures the metric. If you're optimising something like bundle size or latency, an improvement in the metric could still break your tests or types.
+
+Add a `clauto_research.checks.sh` to your project root to catch that. If it exits non-zero, the experiment is reverted regardless of metric improvement.
 
 ```bash
 #!/bin/bash
@@ -103,7 +106,9 @@ npx tsc --noEmit
 echo "CHECKS_PASSED"
 ```
 
-If this script exits non-zero, the experiment is reverted even if the metric improved. This prevents regressions.
+A template is provided in `templates/clauto_research.checks.sh`.
+
+You don't need this if your benchmark command already fails on broken code (e.g. your test suite is the benchmark).
 
 ## Requirements
 

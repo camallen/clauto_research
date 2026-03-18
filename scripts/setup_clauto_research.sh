@@ -11,6 +11,7 @@ COMMAND=""
 METRIC=""
 DIRECTION="lower"
 SCOPE=""
+CHECKS=""
 MAX_ITERATIONS=0
 COMPLETION_PROMISE="GOAL MET"
 
@@ -31,6 +32,7 @@ OPTIONS:
   --metric <name>              Metric name to track
   --direction lower|higher     Optimize direction (default: lower)
   --scope <glob>               Files in scope for modification
+  --checks <cmd>               Validation command (optional, e.g. "npm test")
   --max-iterations <n>         Max iterations (default: unlimited)
   --completion-promise <text>  Custom promise phrase (default: "GOAL MET")
   -h, --help                   Show this help
@@ -46,6 +48,7 @@ HELP_EOF
     --metric) METRIC="$2"; shift 2 ;;
     --direction) DIRECTION="$2"; shift 2 ;;
     --scope) SCOPE="$2"; shift 2 ;;
+    --checks) CHECKS="$2"; shift 2 ;;
     --max-iterations)
       if ! [[ "${2:-}" =~ ^[0-9]+$ ]]; then
         echo "Error: --max-iterations must be a number" >&2; exit 1
@@ -67,10 +70,11 @@ No goal specified. Please gather the following from the user:
 2. **Command**: What command measures the metric? (e.g., "npm test", "make build")
 3. **Metric name**: What to call the metric (e.g., "duration_ms", "bundle_kb")
 4. **Direction**: lower or higher?
-5. **Scope** (optional): Which files can be modified? (glob pattern)
+5. **Checks** (optional): What command validates the code still works? (e.g., "npm test", "make test"). This runs after each experiment — if it fails, the change is reverted even if the metric improved.
+6. **Scope** (optional): Which files can be modified? (glob pattern)
 
 Then run this command again with the gathered parameters:
-  /autoresearch <goal> --command "<cmd>" --metric <name> --direction <lower|higher>
+  /clauto_research:start <goal> --command "<cmd>" --metric <name> --direction <lower|higher>
 EOF
   exit 0
 fi
@@ -173,7 +177,20 @@ fi
 # 3. clauto_research.jsonl — experiment log (empty to start)
 touch clauto_research.jsonl
 
-# 4. Set up Ralph-compatible loop state file
+# 4. clauto_research.checks.sh — validation gate (optional)
+if [[ -n "$CHECKS" ]]; then
+  cat > clauto_research.checks.sh <<CHECKSEOF
+#!/bin/bash
+set -euo pipefail
+
+${CHECKS}
+
+echo "CHECKS_PASSED"
+CHECKSEOF
+  chmod +x clauto_research.checks.sh
+fi
+
+# 5. Set up loop state file
 mkdir -p .claude
 
 # Quote completion promise for YAML
@@ -222,6 +239,7 @@ cat <<EOF
 Goal:       ${GOAL}
 Metric:     ${METRIC:-duration_ms} (${DIRECTION} is better)
 Command:    ${COMMAND:-"(edit clauto_research.sh)"}
+Checks:     ${CHECKS:-none}
 Scope:      ${SCOPE:-all files}
 Iterations: $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo "unlimited"; fi)
 Branch:     ${BRANCH}

@@ -1,6 +1,6 @@
 ---
 description: "Start an autonomous experiment loop to optimize a metric"
-argument-hint: "[GOAL] [--command CMD] [--metric NAME] [--direction lower|higher] [--scope GLOB] [--max-iterations N]"
+argument-hint: "[GOAL] [--command CMD] [--metric NAME] [--direction lower|higher] [--checks CMD] [--scope GLOB] [--max-iterations N]"
 allowed-tools: ["Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup_clauto_research.sh:*)", "Read", "Write", "Bash", "Glob", "Grep", "Edit"]
 ---
 
@@ -15,6 +15,7 @@ If $ARGUMENTS contains natural language instead of CLI flags, first translate it
 - Identify the benchmark command → `--command "<cmd>"`
 - Identify the metric name → `--metric <name>`
 - Identify the optimization direction → `--direction lower` or `--direction higher`
+- Identify validation command if mentioned → `--checks "<cmd>"`
 - Identify file scope if mentioned → `--scope "<glob>"`
 - Identify iteration limit if mentioned → `--max-iterations <N>`
 
@@ -22,7 +23,8 @@ If you cannot determine --command and --metric from the arguments, DO NOT run th
 1. What command measures the metric? (e.g., "bin/rails test test/models/foo_test.rb", "npm test")
 2. What metric name to track? (e.g., "duration_ms", "coverage_pct")
 3. Should the metric go lower or higher?
-4. Which files are in scope for modification? (optional)
+4. What command validates the code still works? (optional — e.g., "npm test", "make test". If it fails, the experiment is reverted even if the metric improved)
+5. Which files are in scope for modification? (optional)
 
 Once you have at least --command and --metric, construct the full flags and run the script.
 

@@ -52,12 +52,14 @@ export CLAUDE_CODE_SESSION_ID="test-session-123"
   --metric line_count \
   --direction lower \
   --scope "src/**/*.txt" \
+  --checks "echo ok" \
   --max-iterations 5 \
   > /dev/null
 
 [[ -f clauto_research.md ]] && pass "clauto_research.md created" || fail "clauto_research.md missing"
 [[ -f clauto_research.sh ]] && pass "clauto_research.sh created" || fail "clauto_research.sh missing"
 [[ -f clauto_research.jsonl ]] && pass "clauto_research.jsonl created" || fail "clauto_research.jsonl missing"
+[[ -f clauto_research.checks.sh ]] && pass "clauto_research.checks.sh created" || fail "clauto_research.checks.sh missing"
 [[ -f .claude/clauto_research-loop.local.md ]] && pass "loop state file created" || fail "loop state file missing"
 
 # ============================================================
